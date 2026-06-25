@@ -44,6 +44,7 @@ The final optimization phase targets instruction-level overhead within the core 
 Compile the native C++ wrapper and CUDA kernels directly into a shared binary module utilizing the PyTorch `setuptools` utility:
 ```bash
 pip install .
+```
 
 Google Collab Link:
 https://colab.research.google.com/drive/1DZUvhmO7eIotW-mb0qQ-MDWC6Ne2HvF0#scrollTo=s30ZS-v41njw
