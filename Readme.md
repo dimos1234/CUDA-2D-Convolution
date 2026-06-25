@@ -1,4 +1,4 @@
-# Baremetal-ResNet: Hardware-Accelerated 2D CUDA Convolution
+# Hardware-Accelerated 2D CUDA Convolution
 
 A high-performance 2D image convolution acceleration engine engineered from scratch in native CUDA C++. This project demonstrates a complete step-by-step low-level optimization progression, transitioning a foundational deep learning operation into a production-grade GPU kernel that outperforms framework-level baselines at scale.
 
