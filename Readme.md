@@ -4,18 +4,20 @@ A high-performance 2D image convolution acceleration engine engineered from scra
 
 ## Performance Benchmark Matrix
 
-The following execution metrics were captured on an NVIDIA Tesla GPU, benchmarking average processing times across multiple matrix resolutions against PyTorch's native production engine (`torch.nn.functional.conv2d` utilizing cuDNN under the hood).
+The following execution metrics represent the statistical mean captured over 10 independent profiling trials on an NVIDIA Tesla GPU. Custom tiled, coalesced, and unrolled kernel processing times are compared directly against PyTorch's native production engine (`torch.nn.functional.conv2d` utilizing cuDNN).
 
-| Resolution | PyTorch cuDNN Baseline | Custom Optimized Kernel | Architectural Status | Correctness Verification |
-|------------|------------------------|-------------------------|----------------------|--------------------------|
-| 512x512    | 0.0296 ms              | 0.0361 ms               | Launch-Overhead Bound| **PASSED** |
-| 1024x1024  | 0.1114 ms              | 0.1021 ms               | 1.09x Speedup        | **PASSED** |
-| 2048x2048  | 0.4612 ms              | 0.3782 ms               | 1.22x Speedup        | **PASSED** |
-| 4096x4096  | 1.8535 ms              | 1.4915 ms               | **1.24x Speedup** | **PASSED** |
+| Resolution | PyTorch cuDNN Baseline (Mean) | Custom Optimized Kernel (Mean) | Architectural Status | Correctness Verification |
+|------------|-------------------------------|--------------------------------|----------------------|--------------------------|
+| 512x512    | 0.0289 ms                     | 0.0376 ms                      | Launch-Overhead Bound| **PASSED** |
+| 1024x1024  | 0.1069 ms                     | 0.0911 ms                      | **1.17x Speedup** | **PASSED** |
+| 2048x2048  | 0.3087 ms                     | 0.2792 ms                      | **1.11x Speedup** | **PASSED** |
+| 4096x4096  | 1.0590 ms                     | 0.9087 ms                      | **1.16x Speedup** | **PASSED** |
 
-*Note: All custom kernel outputs are checked via an automated element-wise mathematical verification script against PyTorch tensors to confirm 100% mathematical accuracy within floating-point tolerance.*
+*Note: All custom kernel outputs are verified element-wise against native PyTorch tensors to guarantee 100% mathematical accuracy within floating-point tolerance across all tested dimensions.*
 
 ---
+
+![Performance Scaling Curves](performance_curves.png)
 
 ## Low-Level Optimization Walkthrough
 
