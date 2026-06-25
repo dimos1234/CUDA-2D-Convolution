@@ -59,6 +59,19 @@ __global__ void coalescedConvolution(const unsigned char *d_input, unsigned char
   }
 }
 
+// for python to call
+void launch_unrolled_convolution(const unsigned char* input, unsigned char* output, int width, int height, const float* filter) {
+    dim3 threadsPerBlock(BLOCK_SIZE, BLOCK_SIZE);
+    // Dynamic ceiling calculation to handle any image size safely
+    dim3 numBlocks((width + BLOCK_SIZE - 1) / BLOCK_SIZE, (height + BLOCK_SIZE - 1) / BLOCK_SIZE);
+
+    coalescedConvolution<<<numBlocks, threadsPerBlock>>>(input, output, width, height, filter);
+
+    // Block Python until the GPU is 100% finished doing the math
+    cudaDeviceSynchronize();
+}
+
+#ifndef BUILDING_PYTHON_MODULE
 int main() {
     const int width = 512;
     const int height = 512;
@@ -72,11 +85,7 @@ int main() {
         h_input[i] = (unsigned char)(rand() % 256);
     }
 
-    float h_filter[9] = {
-         0, -1,  0,
-        -1,  5, -1,
-         0, -1,  0
-    };
+    float h_filter[9] = { 0, -1, 0, -1, 5, -1, 0, -1, 0 };
 
     unsigned char *d_input, *d_output;
     float *d_filter;
@@ -94,11 +103,10 @@ int main() {
     cudaEvent_t start, stop;
     cudaEventCreate(&start);
     cudaEventCreate(&stop);
-
     cudaEventRecord(start);
-    
+
     coalescedConvolution<<<numBlocks, threadsPerBlock>>>(d_input, d_output, width, height, d_filter);
-    
+
     cudaEventRecord(stop);
     cudaEventSynchronize(stop);
 
@@ -108,13 +116,10 @@ int main() {
 
     cudaMemcpy(h_output, d_output, img_size, cudaMemcpyDeviceToHost);
 
-    cudaEventDestroy(start);
-    cudaEventDestroy(stop);
-    cudaFree(d_input);
-    cudaFree(d_output);
-    cudaFree(d_filter);
-    free(h_input);
-    free(h_output);
+    cudaEventDestroy(start); cudaEventDestroy(stop);
+    cudaFree(d_input); cudaFree(d_output); cudaFree(d_filter);
+    free(h_input); free(h_output);
 
     return 0;
 }
+#endif
