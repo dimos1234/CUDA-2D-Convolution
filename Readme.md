@@ -10,7 +10,7 @@ The following execution metrics represent the statistical mean captured over 10 
 |------------|-------------------------------|--------------------------------|----------------------|--------------------------|
 | 512x512    | 0.0289 ms                     | 0.0376 ms                      | Launch-Overhead Bound| **PASSED** |
 | 1024x1024  | 0.1069 ms                     | 0.0911 ms                      | **1.17x Speedup** | **PASSED** |
-| 2048x2048  | 0.3087 ms                     | 0.2253 ms                      | **1.37x Speedup** | **PASSED** |
+| 2048x2048  | 0.3087 ms                     | 0.2792 ms                      | **1.11x Speedup** | **PASSED** |
 | 4096x4096  | 1.0590 ms                     | 0.9087 ms                      | **1.16x Speedup** | **PASSED** |
 
 *Note: All custom kernel outputs are verified element-wise against native PyTorch tensors to guarantee 100% mathematical accuracy within floating-point tolerance across all tested dimensions.*
